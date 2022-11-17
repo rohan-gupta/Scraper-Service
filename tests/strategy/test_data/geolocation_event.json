@@ -1,0 +1,39 @@
+[
+    {
+        "sns_event_type": "produce",
+        "data_type": "json",
+        "scraping_type": "restaurants",
+        "scope": {
+            "url": "http://www.eatigo.com?page={[page]}latlng={[latitude},{[longitude]}",
+            "method": "GET"
+        },
+        "variables": {
+            "page": 1,
+            "latitude": 1.29,
+            "longitude": 103.85
+            },
+        "strategy": [
+            {
+                "method": "value_increment",
+                "target": ["page"],
+                "condition": {
+                    "method": "have_data",
+                    "json_path": "$.result.result"
+                },
+                "value": 1
+            },
+            {
+                "method": "geolocation",
+                "target": ["latitude","longitude"],
+                "condition": {
+                    "method": "have_data",
+                    "json_path": "$.result.result"
+                },
+                "type": "s3",
+                "value": "hk/latlong_list.json"
+            }
+        ],
+        "service_name": "eatigo",
+        "country_code": "hk"
+    }
+]

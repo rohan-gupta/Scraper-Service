@@ -1,0 +1,9 @@
+certifi
+chardet
+idna
+urllib3
+boto3
+pyyaml
+ujson
+jsonpath_ng
+git+https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/deliveryhero/fp-apac-gaia-scrapehelper@0.3.5

@@ -1,0 +1,42 @@
+language: python
+node_js: 12.11.0
+python: 3.8
+os: linux
+dist: xenial
+cache: 
+  - node_modules
+install:
+  - pip install -r requirements.txt
+  - pip install -r requirements-test.txt
+  - pip install awscli
+  - nvm install 12
+  - npm install serverless -g
+before_deploy:
+  - sls plugin install -n serverless-python-requirements --accountId $ACCOUNT_ID --region $REGION
+  - sls plugin install -n serverless-plugin-datadog@2.31.0 --accountId $ACCOUNT_ID --region $REGION
+script:
+  - coverage run -m pytest
+  - coverage report -m
+  - coverage xml -o cobertura.xml
+  - bash <(curl -Ls https://coverage.codacy.com/get.sh)
+jobs:
+  include:
+    - name: 'Asia Pacific'
+      env:
+        - REGION=ap-southeast-1
+    - name: 'Europe'
+      env:
+        - REGION=eu-west-1
+deploy:
+  - provider: script
+    script: sls deploy --verbose --stage prd --accountId $ACCOUNT_ID --region $REGION
+    skip_cleanup: "true"
+    on:
+      branch: master
+  - provider: script
+    script: sls deploy --verbose --stage dev --accountId $ACCOUNT_ID --region $REGION
+    skip_cleanup: "true"
+    on:
+      branch: develop
+after_deploy:
+  - bash datafridge_deployment.sh

@@ -1,0 +1,31 @@
+{
+    "event_type": "produce",
+    "data_type": "json",
+    "scope": {
+        "url": "https://eatigo.com?page={[page]}",
+        "method": "GET",
+        "data": {
+            "page": 1
+        }
+    },
+    "strategy": {
+        "value_increment": {
+            "variable": ["page"],
+            "condition": "has_more_data",
+            "value": 1
+        }
+    },
+    "service_name": "grab",
+    "country_code": "sg",
+    "scraped_data_hash": "123",
+    "mapper_config": [
+        {
+            "type": "s3",
+            "entity_type": "restaurant",
+            "value": {
+                "bucket": "fp-apac-vci-gaia-rover-condition-ap-southeast-1-dev",
+                "key": "datamapping/eatigo.json"
+            }
+        }
+    ]
+}

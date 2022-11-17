@@ -1,0 +1,20 @@
+scraping_type: api
+data_type: json
+
+scope:
+  url: http://www.eatigo.com?page{[page]}
+  method: GET
+  data:
+    page: 1
+  
+strategy:
+  - method: value_increment
+    target:
+      - page
+    condition:
+      method: have_data
+      json_path: $.result.result
+    value: 1
+
+service_name: eatigo
+country_code: hk

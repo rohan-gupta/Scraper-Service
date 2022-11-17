@@ -1,0 +1,182 @@
+[
+    {
+        "data_type": "json",
+        "scraping_type": "restaurants",
+        "scope": {
+            "url": "http://www.eatigo.com?page={page}",
+            "method": "GET"
+        },
+        "variables": {
+            "page": 1
+        },
+        "strategy": {
+            "increment": {
+                "target": ["page"],
+                "condition": "have_data"
+            }
+        },
+        "service_name": "eatigo",
+        "country_code": "hk"
+    },
+    {
+        "sns_event_type": "gather",
+        "scraping_type": "restaurants",
+        "scope": {
+            "url": "http://www.eatigo.com?page={page}",
+            "method": "GET"
+        },
+        "variables": {
+            "page": 1
+        },
+        "strategy": {
+            "increment": {
+                "target": ["page"],
+                "condition": "have_data"
+            }
+        },
+        "service_name": "eatigo",
+        "country_code": "hk"
+    },
+    {
+        "sns_event_type": "gather",
+        "data_type": "json",
+        "scope": {
+            "url": "http://www.eatigo.com?page={page}",
+            "method": "GET"
+        },
+        "variables": {
+            "page": 1
+        },
+        "strategy": {
+            "increment": {
+                "target": ["page"],
+                "condition": "have_data"
+            }
+        },
+        "service_name": "eatigo",
+        "country_code": "hk"
+    },
+    {
+        "sns_event_type": "gather",
+        "data_type": "json",
+        "scraping_type": "restaurants",
+        "scope": {
+            "method": "GET"
+        },
+        "variables": {
+            "page": 1
+        },
+        "strategy": {
+            "increment": {
+                "target": ["page"],
+                "condition": "have_data"
+            }
+        },
+        "service_name": "eatigo",
+        "country_code": "hk"
+    },
+    {
+        "sns_event_type": "gather",
+        "data_type": "json",
+        "scraping_type": "restaurants",
+        "variables": {
+            "page": 1
+        },
+        "strategy": {
+            "increment": {
+                "target": ["page"],
+                "condition": "have_data"
+            }
+        },
+        "service_name": "eatigo",
+        "country_code": "hk"
+    },
+    {
+        "sns_event_type": "gather",
+        "data_type": "json",
+        "scraping_type": "restaurants",
+        "scope": {
+            "url": "http://www.eatigo.com?page={page}"
+        },
+        "variables": {
+            "page": 1
+        },
+        "strategy": {
+            "increment": {
+                "target": ["page"],
+                "condition": "have_data"
+            }
+        },
+        "service_name": "eatigo",
+        "country_code": "hk"
+    },
+    {
+        "sns_event_type": "gather",
+        "data_type": "json",
+        "scraping_type": "restaurants",
+        "scope": {
+            "url": "http://www.eatigo.com?page={page}",
+            "method": "GET"
+        },
+        "strategy": {
+            "increment": {
+                "target": ["page"],
+                "condition": "have_data"
+            }
+        },
+        "service_name": "eatigo",
+        "country_code": "hk"
+    },
+    {
+        "sns_event_type": "gather",
+        "data_type": "json",
+        "scraping_type": "restaurants",
+        "scope": {
+            "url": "http://www.eatigo.com?page={page}",
+            "method": "GET"
+        },
+        "variables": {
+            "page": 1
+        },
+        "service_name": "eatigo",
+        "country_code": "hk"
+    },
+    {
+        "sns_event_type": "gather",
+        "data_type": "json",
+        "scraping_type": "restaurants",
+        "scope": {
+            "url": "http://www.eatigo.com?page={page}",
+            "method": "GET"
+        },
+        "variables": {
+            "page": 1
+        },
+        "strategy": {
+            "increment": {
+                "target": ["page"],
+                "condition": "have_data"
+            }
+        },
+        "service_name": "eatigo"
+    },
+    {
+        "sns_event_type": "gather",
+        "data_type": "json",
+        "scraping_type": "restaurants",
+        "scope": {
+            "url": "http://www.eatigo.com?page={page}",
+            "method": "GET"
+        },
+        "variables": {
+            "page": 1
+        },
+        "strategy": {
+            "increment": {
+                "target": ["page"],
+                "condition": "have_data"
+            }
+        },
+        "country_code": "hk"
+    }
+]

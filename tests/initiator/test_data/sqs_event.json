@@ -1,0 +1,77 @@
+{
+    "sns_event_type": "produce",
+    "scraper_type": "api",
+    "scraping_type": "restaurant",
+    "scope": {
+        "url": "http://www.eatigo.com?page={[page]}",
+        "method": "GET"
+    },
+    "variables": {
+        "page": 1
+    },
+    "strategy": [],
+    "current_lambda": "scraper1",
+    "service_name": "eatigo",
+    "country_code": "hk",
+    "scraped_data_hash": "123",
+    "initiator": [
+        {
+            "scraping_type": "menu",
+            "json_path": "$.result.result[*]",
+            "scope": {
+                "url": "https://www.eatigo.com?menu={[menu_id]}",
+                "method": "GET"
+            },
+            "variables": {
+                "menu_id": [{
+                    "method": "json_path",
+                    "json_path": "$.id"
+                },
+                {
+                    "method": "replace_value",
+                    "to_replace": "1",
+                    "value": "1231"
+                }],
+                "page": [{
+                    "method": "set_value",
+                    "value": 1
+                }]
+            },
+            "mapper_config": [
+                {
+                    "entity_type": "menu",
+                    "value": {
+                        "key": "datamapping/v2/eatigo_menu.json"
+                    }
+                }
+            ]
+        },
+        {
+            "scraping_type": "grocery",
+            "initiator_method": "list_iteration",
+            "json_path": "$.result.items",
+            "scope": {
+                "url": "https://www.eatigo.com?item={[item_id]}",
+                "method": "GET"
+            },
+            "variables": {
+                "item_id": {
+                    "method": "json_path",
+                    "json_path": "$.id"
+                },
+                "page": {
+                    "method": "set_value",
+                    "value": 1
+                }
+            },
+            "mapper_config": [
+                {
+                    "entity_type": "grocery",
+                    "value": {
+                        "key": "datamapping/v2/eatigo_grocery.json"
+                    }
+                }
+            ]
+        }
+    ]
+}

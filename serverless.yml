@@ -1,0 +1,237 @@
+org: fpgaia
+app: scraper
+service: pd-vci-scraper
+
+
+plugins:
+  - serverless-python-requirements
+  - serverless-plugin-datadog
+package:
+  exclude:
+    - coverage/**
+    - test_*.py
+    - test_data/**
+    - venv/**
+    - node_modules/**
+
+custom:
+  pythonRequirements:
+    zip: true
+  bucket: fp-apac-vci-gaia-rover-condition-${opt:region}-${opt:stage, self:provider.stage}
+  datadog:
+    addLayers: true
+    flushMetricsToLogs: false
+    enableXrayTracing: true
+    enableDDTracing: true
+    enableTags: true
+    site: datadoghq.eu
+    apiKey: ${env:DATADOG_API_KEY}
+    forwarder: arn:aws:lambda:${self:provider.region}:${self:provider.accountId}:function:DatadogForwarderVCI
+  datadogTags:
+    dh_squad: vci
+    dh_tribe: pd_newbusiness
+    dh_env: ${self:provider.stage}
+    vci_app: probes
+    vci_version: 2.0
+  gatherSqsApi: pd-vci-gather-api
+  initiatorSqs: pd-vci-initiator
+  signalSns: pd-vci-scraper-signal
+  incomingSignalSns: pd-vci-scraper-signal-incoming
+  produceSns: pd-vci-produce
+  gatherSns: pd-vci-gather
+  schedulerSns: pd-vci-scheduler
+  
+provider:
+  name: aws
+  runtime: python3.8
+  region: ${opt:region}
+  stage: ${opt:stage, 'dev'}
+  accountId: ${opt:accountId}
+  memorySize: 512
+  timeout: 30
+  logRetentionInDays: 14
+  versionFunctions: false
+  deploymentBucket:
+    name: fp-apac-vci-gaia-deploys-${opt:region}-${self:provider.stage}
+    maxPreviousDeploymentArtifacts: 3
+    tags: 
+      squad: vci
+  deploymentPrefix: scraper
+  environment:
+    AVAILABLE_LAMBDAS: scraper1,scraper2,scraper3,scraper4,scraper5,scraper6,scraper7,scraper8,scraper9,scraper10
+    SNS_SIGNAL: arn:aws:sns:${self:provider.region}:${self:provider.accountId}:${self:custom.signalSns}
+    SNS_SIGNAL_INCOMING: arn:aws:sns:${self:provider.region}:${self:provider.accountId}:${self:custom.incomingSignalSns}
+    SNS_PRODUCE: arn:aws:sns:${self:provider.region}:${self:provider.accountId}:${self:custom.produceSns}
+    SNS_GATHER: arn:aws:sns:${self:provider.region}:${self:provider.accountId}:${self:custom.gatherSns}
+    SNS_SCHEDULER: arn:aws:sns:${self:provider.region}:${self:provider.accountId}:${self:custom.schedulerSns}
+    DATA_TABLE: fp-vci-data-table
+    SIGNAL_TABLE: fp-vci-signals
+    COLD_START: true
+    STAGE: ${self:provider.stage}
+    REGION_NAME: ${self:provider.region}
+    VCI_BUCKET: ${self:custom.bucket}
+    API_KEY: ${env:API_KEY}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:BatchWriteItem
+      Resource:
+        - arn:aws:dynamodb:${opt:region, self:provider.region}:${opt:accountId, self:provider.accountId}:table/${self:provider.environment.DATA_TABLE}
+        - arn:aws:dynamodb:${opt:region, self:provider.region}:${opt:accountId, self:provider.accountId}:table/${self:provider.environment.SIGNAL_TABLE}
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:PutObjectAcl
+        - s3:GetObject
+      Resource: "arn:aws:s3:::${self:custom.bucket}/*"
+    - Effect: "Allow"
+      Action:
+        - "SNS:Publish"
+      Resource: 
+        - ${self:provider.environment.SNS_SIGNAL}
+        - ${self:provider.environment.SNS_PRODUCE}
+        - ${self:provider.environment.SNS_GATHER}
+        - ${self:provider.environment.SNS_SIGNAL_INCOMING}
+        - ${self:provider.environment.SNS_SCHEDULER}
+
+functions:
+  json_scraper_1:
+    handler: json_type/handler.main
+    environment:
+      CURRENT_LAMBDA: scraper1
+    events:
+      - sqs:
+          arn: arn:aws:sqs:${self:provider.region}:${self:provider.accountId}:${self:custom.gatherSqsApi}-1
+          batchSize: 1
+    tags: ${self:custom.datadogTags}
+
+  json_scraper_2:
+    handler: json_type/handler.main
+    events:
+      - sqs:
+          arn: arn:aws:sqs:${self:provider.region}:${self:provider.accountId}:${self:custom.gatherSqsApi}-2
+          batchSize: 1
+    environment:
+      CURRENT_LAMBDA: scraper2
+    tags: ${self:custom.datadogTags}
+
+  json_scraper_3:
+    handler: json_type/handler.main
+    events:
+      - sqs:
+          arn: arn:aws:sqs:${self:provider.region}:${self:provider.accountId}:${self:custom.gatherSqsApi}-3
+          batchSize: 1
+    environment:
+      CURRENT_LAMBDA: scraper3
+    tags: ${self:custom.datadogTags}
+
+  json_scraper_4:
+    handler: json_type/handler.main
+    events:
+      - sqs:
+          arn: arn:aws:sqs:${self:provider.region}:${self:provider.accountId}:${self:custom.gatherSqsApi}-4
+          batchSize: 1
+    environment:
+      CURRENT_LAMBDA: scraper4
+    tags: ${self:custom.datadogTags}
+
+  json_scraper_5:
+    handler: json_type/handler.main
+    events:
+      - sqs:
+          arn: arn:aws:sqs:${self:provider.region}:${self:provider.accountId}:${self:custom.gatherSqsApi}-5
+          batchSize: 1
+    environment:
+      CURRENT_LAMBDA: scraper5
+    tags: ${self:custom.datadogTags}
+
+  json_scraper_6:
+    handler: json_type/handler.main
+    events:
+      - sqs:
+          arn: arn:aws:sqs:${self:provider.region}:${self:provider.accountId}:${self:custom.gatherSqsApi}-6
+          batchSize: 1
+    environment:
+      CURRENT_LAMBDA: scraper6
+    tags: ${self:custom.datadogTags}
+
+  json_scraper_7:
+    handler: json_type/handler.main
+    events:
+      - sqs:
+          arn: arn:aws:sqs:${self:provider.region}:${self:provider.accountId}:${self:custom.gatherSqsApi}-7
+          batchSize: 1
+    environment:
+      CURRENT_LAMBDA: scraper7
+    tags: ${self:custom.datadogTags}
+
+  json_scraper_8:
+    handler: json_type/handler.main
+    events:
+      - sqs:
+          arn: arn:aws:sqs:${self:provider.region}:${self:provider.accountId}:${self:custom.gatherSqsApi}-8
+          batchSize: 1
+    environment:
+      CURRENT_LAMBDA: scraper8
+    tags: ${self:custom.datadogTags}
+
+  json_scraper_9:
+    handler: json_type/handler.main
+    events:
+      - sqs:
+          arn: arn:aws:sqs:${self:provider.region}:${self:provider.accountId}:${self:custom.gatherSqsApi}-9
+          batchSize: 1
+    environment:
+      CURRENT_LAMBDA: scraper9
+    tags: ${self:custom.datadogTags}
+
+  json_scraper_10:
+    handler: json_type/handler.main
+    events:
+      - sqs:
+          arn: arn:aws:sqs:${self:provider.region}:${self:provider.accountId}:${self:custom.gatherSqsApi}-10
+          batchSize: 1
+    environment:
+      CURRENT_LAMBDA: scraper10
+    tags: ${self:custom.datadogTags}
+
+  strategy:
+    handler: strategy/handler.main
+    events:
+      - sns: ${self:provider.environment.SNS_PRODUCE}
+      - sns: ${self:provider.environment.SNS_SIGNAL_INCOMING}
+    tags: ${self:custom.datadogTags}
+
+  iniator:
+    handler: initiator/handler_api.main
+    events:
+        - http:
+            path: api/v1/initiator
+            method: post
+            cors:
+              origin: 
+                - '*'
+              headers:
+                - Content-Type
+                - X-Amz-Date
+                - Authorization
+                - X-Api-Key
+                - X-Amz-Security-Token
+                - X-Amz-User-Agent
+                - api-key
+              allowCredentials: false
+              cacheControl: 'max-age=600, s-maxage=600, proxy-revalidate'
+    tags: ${self:custom.datadogTags}
+
+  iniator_sqs:
+    handler: initiator/handler_sqs.main
+    events:
+      - sqs:
+          arn: arn:aws:sqs:${self:provider.region}:${self:provider.accountId}:${self:custom.initiatorSqs}
+          batchSize: 1
+    tags: ${self:custom.datadogTags}
